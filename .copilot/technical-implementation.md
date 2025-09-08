@@ -4,27 +4,30 @@
 
 ### 1. Core Stack
 ```
-Frontend: Next.js 14+ (App Router)
+Frontend: Next.js 15 (App Router)
 AI Provider: OpenRouter API
-Database: PostgreSQL with Prisma
-Authentication: NextAuth.js
-Real-time: Server-Sent Events (SSE)
-Deployment: Vercel
+Backend Platform: Appwrite (Auth, Database, Storage, Realtime, Functions)
+Auth: Appwrite Auth (OAuth via providers)
+DB: Appwrite Databases & Collections
+Realtime: Appwrite Channels (chat, actions)
+Deployment: Vercel (web) + Appwrite Cloud/self-hosted
 ```
 
 ### 2. System Architecture
 
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Chat UI       │    │   AI Orchestrator │    │   API Gateway   │
-│   (Next.js)     │◄──►│   (OpenRouter)    │◄──►│   (Express)     │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │                         │
-                                ▼                         ▼
-                       ┌──────────────────┐    ┌─────────────────┐
-                       │   Context Store  │    │  External APIs  │
-                       │   (PostgreSQL)   │    │  (Notion, etc.) │
-                       └──────────────────┘    └─────────────────┘
+┌──────────────────┐    ┌─────────────────────┐    ┌─────────────────┐
+│   Chat UI        │    │   AI Orchestrator   │    │  External APIs  │
+│   (Next.js)      │◄──►│   (OpenRouter +     │◄──►│ (Notion, Google │
+└──────────────────┘    │    Appwrite Fn)     │    │  GitHub, etc.)  │
+                        └─────────┬───────────┘    └─────────────────┘
+                                  │
+                                  ▼
+                        ┌─────────────────────┐
+                        │ Appwrite Platform   │
+                        │ Auth | DB | Storage │
+                        │ Realtime | Functions│
+                        └─────────────────────┘
 ```
 
 ### 3. Core Components
@@ -57,24 +60,45 @@ class ContextManager {
 }
 ```
 
-## 4. Database Schema
+#### Agents Manager (`/lib/agents/manager.ts`)
+```typescript
+interface AgentConfig {
+  id: string
+  name: string
+  description?: string
+  systemPrompt: string
+  tools: string[] // e.g., ['notion','calendar','github']
+  memory: {
+    enabled: boolean
+    strategy: 'summary' | 'vector' | 'none'
+  }
+  model: string // openrouter model id
+  temperature?: number
+}
+
+class AgentsManager {
+  - createAgent(userId: string, config: AgentConfig)
+  - updateAgent(agentId: string, updates: Partial<AgentConfig>)
+  - listAgents(userId: string)
+  - runAgent(agentId: string, input: Message)
+}
+```
+
+## 4. Database Schema (Appwrite Collections)
 
 ### Tables
-```sql
--- Users and authentication
-users (id, email, name, created_at)
-accounts (user_id, provider, access_token, refresh_token)
+```text
+Database: electric_chat
 
--- Conversations and context
-conversations (id, user_id, title, created_at)
-messages (id, conversation_id, role, content, metadata)
-
--- API integrations
-api_connections (user_id, provider, credentials, status)
-api_actions (id, user_id, provider, action_type, parameters, result)
-
--- User preferences
-user_preferences (user_id, preferences_json)
+Collections:
+- users: { userId, email, name, avatar, createdAt }
+- conversations: { userId, title, agentId?, createdAt }
+- messages: { conversationId, role, content, metadata, createdAt }
+- api_connections: { userId, provider, credentials (encrypted), status, scopes }
+- api_actions: { userId, provider, actionType, parameters, result, status, error }
+- user_preferences: { userId, preferences }
+- agents: { userId, name, description, systemPrompt, tools[], memory, model, temperature }
+- files: managed by Appwrite Storage (uploads, transcripts, etc.)
 ```
 
 ## 5. API Integration Strategy
@@ -98,7 +122,7 @@ user_preferences (user_id, preferences_json)
 
 ## 6. Security & Authentication
 
-### OAuth Flow
+### OAuth Flow (via Appwrite Auth)
 ```
 1. User connects service → OAuth redirect
 2. Store encrypted tokens → Database
@@ -113,25 +137,31 @@ user_preferences (user_id, preferences_json)
 - API key rotation
 - Audit logging
 
+Token handling note: Store third-party OAuth tokens in `api_connections.credentials` encrypted using Appwrite's built-in encryption and only access via server-side functions/routes.
+
 ## 7. Development Phases
 
 ### Phase 1: Foundation (Weeks 1-2)
 - [ ] Basic chat UI
 - [ ] OpenRouter integration
-- [ ] User authentication
-- [ ] Database setup
+- [ ] Appwrite setup (project, database, auth providers, storage)
+- [ ] Appwrite SDK wiring in Next.js (server and client)
+- [ ] Realtime channels for chat
 
 ### Phase 2: Core APIs (Weeks 3-4)
 - [ ] Notion API integration
 - [ ] Google Calendar integration
 - [ ] Basic action execution
+- [ ] Agents CRUD in Appwrite
 
 ### Phase 3: Enhanced Experience (Weeks 5-6)
 - [ ] Context management
 - [ ] Real-time updates
 - [ ] Error handling and retries
+- [ ] Agent memory strategies (summary/vector)
 
 ### Phase 4: Polish & Deploy (Weeks 7-8)
 - [ ] UI/UX improvements
 - [ ] Performance optimization
 - [ ] Testing and deployment
+- [ ] Appwrite Functions for scheduled tasks (token refresh, sync)

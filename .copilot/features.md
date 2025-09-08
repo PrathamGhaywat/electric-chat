@@ -79,6 +79,29 @@ AI Response:
 
 ## Advanced Features
 
+### 4.5. Build Your Own AI Agents
+**Description**: Users can create custom AI agents with their own system prompts, tools, memory strategies, and model choices powered by OpenRouter. Stored and managed via Appwrite.
+
+**Features**:
+- Agent builder UI (name, description, system prompt)
+- Tool selection (Notion, Calendar, Gmail, GitHub, Slack...)
+- Memory options (none, summary, vector)
+- Model and parameters (temperature, max tokens)
+- Shareable agents with permissions (private, team, public)
+- Assign default agent per conversation
+
+**User Stories**:
+- As a user, I can create a “Project Manager” agent that can schedule meetings and update Notion
+- As a user, I can duplicate and tweak an existing agent
+- As a user, I can share an agent with my team with view/use permissions
+- As a user, I can pick which agent answers a conversation
+
+**Technical Notes**:
+- Store agent configs in Appwrite `agents` collection
+- Validate allowed tools per user (based on connected APIs)
+- Enforce rate limits per agent
+- Track agent usage analytics
+
 ### 5. Smart Action Suggestions
 **Description**: AI proactively suggests relevant actions based on context
 
@@ -227,6 +250,15 @@ AI Response:
 - Teams meeting scheduling
 - Discord server management
 - WhatsApp message automation (where permitted)
+
+## Platform Backbone
+
+### Appwrite
+- Auth: OAuth providers (Google, GitHub), email/password
+- Database: Conversations, messages, agents, connections, actions, preferences
+- Storage: File uploads, transcripts, attachments
+- Realtime: Live chat updates and action progress
+- Functions: Secure server-side integrations and token refresh
 
 ## Future Feature Ideas
 

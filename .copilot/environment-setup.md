@@ -8,12 +8,17 @@ OPENROUTER_API_KEY=your_openrouter_api_key
 OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 ```
 
-### 2. Database (PostgreSQL)
+### 2. Appwrite (Auth, DB, Storage, Realtime)
 ```env
-DATABASE_URL="postgresql://username:password@localhost:5432/electric_chat"
+APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
+APPWRITE_PROJECT_ID=your_appwrite_project_id
+APPWRITE_API_KEY=your_appwrite_api_key # server-side
+APPWRITE_DATABASE_ID=electric_chat
+APPWRITE_BUCKET_ID=uploads
 ```
 
-### 3. NextAuth Configuration
+### 3. (Optional) NextAuth Configuration
+If you prefer NextAuth on top of Appwrite, add:
 ```env
 NEXTAUTH_SECRET=your_nextauth_secret_key
 NEXTAUTH_URL=http://localhost:3000
@@ -75,13 +80,13 @@ cp .env.example .env.local
 # Edit .env.local with your actual API keys
 ```
 
-### 2. Database Setup
-```bash
-# Install PostgreSQL locally or use cloud provider
-# Update DATABASE_URL in .env.local
-npx prisma migrate dev
-npx prisma generate
-```
+### 2. Appwrite Setup
+1. Create a project in Appwrite Cloud or self-hosted
+2. Create a Database `electric_chat` with collections:
+   - users, conversations, messages, api_connections, api_actions, user_preferences, agents
+3. Create a Storage bucket `uploads`
+4. Enable OAuth providers you need (Google, GitHub)
+5. Create an API Key for server-side use (Functions or Next.js server)
 
 ### 3. OAuth Application Setup
 
@@ -116,15 +121,17 @@ npx prisma generate
 ### Development Environment
 ```env
 NODE_ENV=development
-NEXTAUTH_URL=http://localhost:3000
-DATABASE_URL="postgresql://localhost:5432/electric_chat_dev"
+NEXT_PUBLIC_APPWRITE_ENDPOINT=http://localhost/v1
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=your_dev_project_id
+APPWRITE_API_KEY=dev_server_key
 ```
 
 ### Production Environment
 ```env
 NODE_ENV=production
-NEXTAUTH_URL=https://yourdomain.com
-DATABASE_URL="postgresql://prod_url"
+NEXT_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=your_prod_project_id
+APPWRITE_API_KEY=prod_server_key
 ```
 
 ## Security Considerations
@@ -140,3 +147,4 @@ DATABASE_URL="postgresql://prod_url"
 - Regularly audit connected applications
 - Implement token refresh mechanisms
 - Store tokens encrypted in database
+ - For Appwrite API Key, scope it to required resources only and keep server-side only

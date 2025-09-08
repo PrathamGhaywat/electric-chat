@@ -1,4 +1,4 @@
-# UI/UX Implementation Plan
+# UI/UX Implementation Plan (Next.js 15)
 
 ## Design Philosophy
 - **Conversational**: Chat-first interface that feels natural
@@ -12,7 +12,7 @@
 ### 1. Layout Structure
 ```
 ┌─────────────────────────────────────────┐
-│           Header (Model Selector)       │
+│        Header (Model/Agent Selector)    │
 ├─────────────────────────────────────────┤
 │                                         │
 │           Chat Messages Area            │
@@ -86,6 +86,22 @@ interface ConnectionCardProps {
 }
 ```
 
+#### Agents Builder (`/components/agents/AgentBuilder.tsx`)
+```typescript
+interface AgentConfigForm {
+  name: string
+  description?: string
+  systemPrompt: string
+  tools: Array<'notion'|'calendar'|'gmail'|'github'|'slack'>
+  memory: { enabled: boolean; strategy: 'summary'|'vector'|'none' }
+  model: string // OpenRouter model id
+  temperature?: number
+}
+```
+- Create, edit, duplicate, delete agents
+- Preview agent behavior (dry run)
+- Assign default agent per conversation
+
 #### Real-time Status Indicator (`/components/status/StatusIndicator.tsx`)
 - Shows ongoing API operations
 - Progress bars for long operations
@@ -97,6 +113,7 @@ interface ConnectionCardProps {
 - Connected services status
 - Quick actions
 - User preferences
+ - Agents list and quick switch
 
 ## 4. Interactive Elements
 
@@ -224,3 +241,4 @@ Esc : Cancel current action
 - localStorage for preferences
 - IndexedDB for chat history
 - CDN for static assets
+ - Appwrite Realtime optimistic updates

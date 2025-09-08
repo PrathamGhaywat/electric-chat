@@ -1,11 +1,11 @@
-# API Integration Specifications
+# API Integration Specifications (with Appwrite)
 
 ## 1. Notion API Integration
 
 ### Authentication
 - **Type**: OAuth 2.0
 - **Scopes**: `read_content`, `insert_content`, `update_content`
-- **Token Storage**: Encrypted in database per user
+- **Token Storage**: Encrypted in Appwrite per user (collection: `api_connections.credentials`)
 
 ### Core Capabilities
 ```typescript
@@ -38,7 +38,7 @@ interface NotionActions {
 ### Authentication
 - **Type**: OAuth 2.0
 - **Scopes**: `https://www.googleapis.com/auth/calendar`
-- **Token Refresh**: Automatic background refresh
+- **Token Refresh**: Appwrite Function scheduled refresh
 
 ### Core Capabilities
 ```typescript
@@ -72,7 +72,7 @@ interface CalendarActions {
 ### Authentication
 - **Type**: OAuth 2.0  
 - **Scopes**: `https://www.googleapis.com/auth/gmail.modify`
-- **Security**: Read/send permissions with user consent
+- **Security**: Read/send permissions with user consent; tokens stored server-side in Appwrite
 
 ### Core Capabilities
 ```typescript
@@ -108,7 +108,7 @@ interface GmailActions {
 ### Authentication
 - **Type**: Personal Access Token or OAuth App
 - **Permissions**: `repo`, `user`, `read:org`
-- **Security**: Token encryption and rotation
+- **Security**: Token encryption in Appwrite and rotation via reminders
 
 ### Core Capabilities
 ```typescript
@@ -148,7 +148,7 @@ interface GitHubActions {
 ### Authentication
 - **Type**: OAuth 2.0
 - **Scopes**: `channels:read`, `chat:write`, `users:read`
-- **Bot Token**: For workspace-level operations
+- **Bot Token**: For workspace-level operations; store in Appwrite
 
 ### Core Capabilities
 ```typescript
@@ -254,7 +254,7 @@ interface APIResponse<T> {
 
 ### Token Management
 - Automatic refresh for OAuth tokens
-- Encrypted storage in database
+- Encrypted storage in Appwrite database
 - Fallback authentication prompts
 - Regular token validity checks
 

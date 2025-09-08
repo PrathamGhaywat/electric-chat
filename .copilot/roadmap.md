@@ -4,19 +4,19 @@
 **Goal**: Establish core infrastructure and basic chat functionality
 
 ### Week 1: Project Setup & Core Infrastructure
-- [x] Initialize Next.js project with TypeScript
-- [ ] Set up Prisma with PostgreSQL
-- [ ] Configure NextAuth.js for authentication
-- [ ] Create basic project structure and folders
+- [x] Initialize Next.js 15 project with TypeScript
+- [ ] Set up Appwrite project (Auth, Database, Storage, Realtime)
+- [ ] Create Appwrite collections and bucket
+- [ ] Wire Appwrite SDK (client + server) in Next.js
 - [ ] Set up environment configuration
 - [ ] Install and configure UI component library (shadcn/ui)
 
 ### Week 2: Basic Chat Interface
 - [ ] Create chat UI components (MessageBubble, ChatInput, MessageList)
 - [ ] Implement OpenRouter API integration
-- [ ] Add basic streaming chat functionality
-- [ ] Create conversation persistence
-- [ ] Add user authentication flow
+- [ ] Add streaming chat functionality
+- [ ] Create conversation persistence in Appwrite
+- [ ] Add user authentication with Appwrite Auth
 - [ ] Basic responsive design
 
 **Deliverable**: Working chat interface with OpenRouter integration
@@ -25,20 +25,21 @@
 **Goal**: Implement first set of API integrations with action execution
 
 ### Week 3: Notion & Google Calendar
-- [ ] Notion API integration and OAuth setup
+- [ ] Notion API integration and OAuth via Appwrite
 - [ ] Google Calendar API integration
 - [ ] Create action detection from chat messages
 - [ ] Implement basic action execution system
-- [ ] Add action status tracking and UI updates
+- [ ] Add action status tracking and UI updates via Realtime
 
 ### Week 4: Gmail & GitHub Integration
 - [ ] Gmail API integration with OAuth
-- [ ] GitHub API integration with personal access tokens
+- [ ] GitHub API integration (PAT or OAuth)
 - [ ] Enhance action execution with error handling
 - [ ] Create action result display components
 - [ ] Add retry mechanisms for failed actions
+- [ ] Agents CRUD (create, edit, delete) in Appwrite
 
-**Deliverable**: Multi-API assistant capable of executing actions in 4 major platforms
+**Deliverable**: Multi-API assistant capable of executing actions in 4 major platforms + basic custom Agents
 
 ## Phase 3: Enhanced User Experience (Weeks 5-6)
 **Goal**: Improve conversation context and user experience
@@ -49,9 +50,10 @@
 - [ ] Add conversation history search
 - [ ] Build context-aware response generation
 - [ ] Implement conversation branching
+- [ ] Agent memory strategies (summary/vector)
 
 ### Week 6: Real-time Features
-- [ ] Add Server-Sent Events for real-time updates
+- [ ] Appwrite Realtime for live updates
 - [ ] Implement typing indicators and loading states
 - [ ] Create notification system for completed actions
 - [ ] Add voice input capability (optional)
@@ -116,8 +118,9 @@
 
 ### Milestone 1: MVP Launch (End of Week 4)
 - Basic chat with 4 API integrations
-- User authentication
-- Core action execution
+- Appwrite-authenticated users
+- Core action execution with realtime status
+- Basic custom Agents
 - Basic mobile support
 
 ### Milestone 2: Beta Launch (End of Week 8)
